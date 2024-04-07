@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Configure SSH key
         run: |
@@ -24,6 +24,9 @@ jobs:
             IdentityFile ~/.ssh/id_rsa
             StrictHostKeyChecking no
           END
+  
+      - name: Set Git SSH Command
+        run: echo "export GIT_SSH_COMMAND='ssh -o StrictHostKeyChecking=no'" >> $GITHUB_ENV
 
       - name: SSH into EC2 and pull changes
         uses: appleboy/ssh-action@master
