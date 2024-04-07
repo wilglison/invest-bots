@@ -10,21 +10,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: SSH into EC2 and pull changes
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: ${{ secrets.EC2_SSH_PORT }}
-        script: |
-          cd /opt/
-          git pull origin main
-          cd /opt/invest-bots
-          python -m venv env
-          source venv/bin/activate
-          pip install -r requirements.txt
-          python main.py
+      - name: Configure SSH key
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          cat >>~/.ssh/config <<END
+          Host ${{ secrets.EC2_HOST }}
+            User ${{ secrets.EC2_USERNAME }}
+            IdentityFile ~/.ssh/id_rsa
+            StrictHostKeyChecking no
+          END
+
+      - name: SSH into EC2 and pull changes
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          port: ${{ secrets.EC2_SSH_PORT }}
+          script: |
+            cd /opt/
+            git pull origin main
+            cd /opt/invest-bots
+            python -m venv venv
+            source venv/bin/activate
+            pip install -r requirements.txt
+            python main.py
+
