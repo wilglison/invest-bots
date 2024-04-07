@@ -31,11 +31,12 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           port: ${{ secrets.EC2_SSH_PORT }}
           script: |
-            cd /opt/
-            git pull origin main
-            cd /opt/invest-bots
-            python -m venv venv
+            cd ~
+            git clone https://github.com/wilglison/invest-bots.git
+            cd ~/invest-bots
+            sudo apt install -y python3.10-venv
+            sudo python3 -m venv venv
             source venv/bin/activate
             pip install -r requirements.txt
-            python main.py
+            python main.py &
 
