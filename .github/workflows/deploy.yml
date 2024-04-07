@@ -25,21 +25,5 @@ jobs:
             StrictHostKeyChecking no
           END
   
-      - name: Set Git SSH Command
-        run: echo "export GIT_SSH_COMMAND='ssh -o StrictHostKeyChecking=no'" >> $GITHUB_ENV
-
-      - name: SSH into EC2 and pull changes
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          port: ${{ secrets.EC2_SSH_PORT }}
-          script: |
-            cd ~
-            git clone https://github.com/wilglison/invest-bots.git
-            cd ~/invest-bots
-            sudo apt install -y python3.10-venv
-            sudo python3 -m venv venv
-            source venv/bin/activate
-            pip install -r requirements.txt
-            python main.py &
-
+      - name: Atualizar repositório no servidor
+        run: ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} 'bash ~/invest-bots/deploy.sh'
