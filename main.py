@@ -57,11 +57,9 @@ mpf.plot(
     savefig="candlestick.png",
 )
 
-
-
 url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendPhoto"
 files = {'photo': open('candlestick.png', 'rb')}
-#response = requests.post(url, files=files, data={'chat_id': TELEGRAM_CHAT_ID})
-#print(response.json())
+response = requests.post(url, files=files, data={'chat_id': TELEGRAM_CHAT_ID})
+print(response.json())
 
 #sched.start()
