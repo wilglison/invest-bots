@@ -1,9 +1,10 @@
 #!/bin/bash
 
 cd ~
+rm -r invest-bots
 git clone https://github.com/wilglison/invest-bots.git
 cd ~/invest-bots
-git pull
+#git pull
 sudo apt install -y python3.10-venv
 python3 -m venv venv
 source venv/bin/activate
